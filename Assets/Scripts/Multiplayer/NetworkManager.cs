@@ -20,4 +20,32 @@ public class NetworkManager : MonoBehaviour
             }
         }
     }
+
+    public Server Server { get; private set; }
+
+    [SerializeField] private ushort port;
+    [SerializeField] private ushort maxClientCount;
+
+    private void Awake()
+    {
+        Singleton = this;
+    }
+
+    private void Start()
+    {
+        RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
+
+        Server = new Server();
+        Server.Start(port, maxClientCount);
+    }
+
+    private void FixedUpdate()
+    {
+        Server.Update();
+    }
+
+    private void OnApplicationQuit()
+    {
+        Server.Stop();
+    }
 }
