@@ -9,6 +9,9 @@ public class Player : MonoBehaviour
 
 	public ushort Id { get; private set; }
 	public string Username { get; private set; }
+	public PlayerMovement Movement => movement;
+
+	[SerializeField] private PlayerMovement movement;
 
 	private void OnDestroy()
 	{
@@ -33,12 +36,12 @@ public class Player : MonoBehaviour
 	#region Messages
 	private void SendSpawned()
 	{
-		NetworkManager.Singleton.Server.SendToAll(AddSpawnData(Message.Create(MessageSendMode.Reliable, (ushort)ServerToClientId.playerSpawned)));
+		NetworkManager.Singleton.Server.SendToAll(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)));
 	}
 
 	private void SendSpawned(ushort toClientId)
 	{
-		NetworkManager.Singleton.Server.Send(AddSpawnData(Message.Create(MessageSendMode.Reliable, (ushort)ServerToClientId.playerSpawned)), toClientId);
+		NetworkManager.Singleton.Server.Send(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)), toClientId);
 	}
 
 	private Message AddSpawnData(Message message)
@@ -53,6 +56,15 @@ public class Player : MonoBehaviour
 	private static void Name(ushort fromClientId, Message message)
 	{
 		Spawn(fromClientId, message.GetString());
+	}
+
+	[MessageHandler((ushort)ClientToServerId.playerTransform)]
+	private static void PlayerTransform(ushort fromClientId, Message message)
+	{
+		Debug.Log(message.GetUShort());
+		if (list.TryGetValue(fromClientId, out Player player))
+			//Debug.Log(message.GetVector3() + ", " + message.GetVector3() + ", " + message.GetQuaternion());
+			player.Movement.SetTransform(message.GetVector3(), message.GetVector3(), message.GetQuaternion());
 	}
 	#endregion
 }

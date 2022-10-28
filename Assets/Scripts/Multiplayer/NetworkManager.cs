@@ -6,12 +6,14 @@ using UnityEngine;
 
 public enum ServerToClientId : ushort
 {
-    playerSpawned = 1,
+	playerSpawned = 1,
+	playerTransform,
 }
 
 public enum ClientToServerId : ushort
 {
 	name = 1,
+	playerTransform,
 }
 
 public class NetworkManager : MonoBehaviour
@@ -43,6 +45,8 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
+
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
 
         Server = new Server();
@@ -63,6 +67,7 @@ public class NetworkManager : MonoBehaviour
 
     private void PlayerLeft(object sender, ServerDisconnectedEventArgs e)
     {
-        Destroy(Player.list[e.Client.Id].gameObject);
+		if (Player.list.TryGetValue(e.Client.Id, out Player player))
+			Destroy(player.gameObject);
     }
 }
