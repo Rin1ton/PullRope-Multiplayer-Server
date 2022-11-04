@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
 
 	public ushort Id { get; private set; }
 	public string Username { get; private set; }
+	public string mySkin { get; private set; }
 	public PlayerMovement Movement => movement;
 
 	[SerializeField] private PlayerMovement movement;
@@ -18,7 +19,7 @@ public class Player : MonoBehaviour
 		list.Remove(Id);
 	}
 
-	public static void Spawn(ushort id, string username)
+	public static void Spawn(ushort id, string username, string skin)
 	{
 		//make sure we spawn on clients connecting after other clients
 		foreach (Player otherPlayer in list.Values)
@@ -28,6 +29,7 @@ public class Player : MonoBehaviour
 		player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
 		player.Id = id;
 		player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
+		player.mySkin = skin;
 
 		player.SendSpawned();
 		list.Add(id, player);
@@ -49,13 +51,15 @@ public class Player : MonoBehaviour
 		message.AddUShort(Id);
 		message.AddString(Username);
 		message.AddVector3(transform.position);
+		message.AddString(mySkin);
 		return message;
 	}
 
 	[MessageHandler((ushort)ClientToServerId.name)]
 	private static void Name(ushort fromClientId, Message message)
 	{
-		Spawn(fromClientId, message.GetString());
+							//Get name			 Get skin
+		Spawn(fromClientId, message.GetString(), message.GetString());
 	}
 
 	[MessageHandler((ushort)ClientToServerId.playerTransform)]
