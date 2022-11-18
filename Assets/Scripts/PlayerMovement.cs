@@ -26,16 +26,28 @@ public class PlayerMovement : MonoBehaviour
 		transform.rotation = rotation;
 	}
 
+	/* send transform data from clients to other clients
+	 */
 	private void SendTransform()
 	{
+		/* Client is expecting move data every second tick, so we
+		 * won't send this message every tick.
+		 */
+		if (NetworkManager.Singleton.CurrentTick % 2 != 0)
+			return;
+
 		Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.playerTransform);
 		message.AddUShort(player.Id);
+
+		//servertick
+		message.AddUShort(NetworkManager.Singleton.CurrentTick);
 
 		//movement
 		message.AddVector3(camForward);
 		message.AddVector3(transform.position);
 		message.AddQuaternion(transform.rotation);
 
+		//send information about this player to every client
 		NetworkManager.Singleton.Server.SendToAll(message);
 	}
 }
