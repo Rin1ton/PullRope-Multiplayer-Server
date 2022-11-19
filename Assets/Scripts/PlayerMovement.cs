@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 
 	[SerializeField] private Player player;
 	[SerializeField] private Vector3 camForward;
+	private Vector3 myVelocity;
 
 	private void OnValidate()
 	{
@@ -19,11 +20,12 @@ public class PlayerMovement : MonoBehaviour
 		SendTransform();
 	}
 
-	public void SetTransform(Vector3 camera, Vector3 position, Quaternion rotation)
+	public void SetTransform(Vector3 camera, Vector3 position, Quaternion rotation, Vector3 velocity)
 	{
 		camForward = camera;
 		transform.position = position;
 		transform.rotation = rotation;
+		myVelocity = velocity;
 	}
 
 	/* send transform data from clients to other clients
@@ -46,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
 		message.AddVector3(camForward);
 		message.AddVector3(transform.position);
 		message.AddQuaternion(transform.rotation);
+		message.AddVector3(myVelocity);
 
 		//send information about this player to every client
 		NetworkManager.Singleton.Server.SendToAll(message);
