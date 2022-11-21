@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 
 	[SerializeField] private Player player;
 	[SerializeField] private Vector3 camForward;
+	[SerializeField] private GameObject camProxy;
 	private Vector3 myVelocity;
 
 	private void OnValidate()
@@ -23,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
 	public void SetTransform(Vector3 camera, Vector3 position, Quaternion rotation, Vector3 velocity)
 	{
 		camForward = camera;
+		camProxy.transform.forward = camera;
 		transform.position = position;
 		transform.rotation = rotation;
 		myVelocity = velocity;

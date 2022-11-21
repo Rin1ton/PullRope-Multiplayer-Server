@@ -67,9 +67,10 @@ public class Player : MonoBehaviour
 	{
 		Debug.Log(message.GetUShort());
 		if (list.TryGetValue(fromClientId, out Player player))
-			//Debug.Log(message.GetVector3() + ", " + message.GetVector3() + ", " + message.GetQuaternion());
 			//								camera forward				position			rotation				velocity
 			player.Movement.SetTransform(message.GetVector3(), message.GetVector3(), message.GetQuaternion(), message.GetVector3());
+
+			//Debug.Log(message.GetVector3() + ", " + message.GetVector3() + ", " + message.GetQuaternion());
 	}
 	#endregion
 }
