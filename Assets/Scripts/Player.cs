@@ -1,11 +1,14 @@
 using Riptide;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
 	public static Dictionary<ushort, Player> list = new Dictionary<ushort, Player>();
+
+	public List<Collider> playersInBoopRange = new List<Collider>();
 
 	public ushort Id { get; private set; }
 	public string Username { get; private set; }
@@ -13,6 +16,8 @@ public class Player : MonoBehaviour
 	public PlayerMovement Movement => movement;
 
 	[SerializeField] private PlayerMovement movement;
+
+	public Vector3 camForward => movement.camForward;
 
 	private void OnDestroy()
 	{
@@ -65,7 +70,7 @@ public class Player : MonoBehaviour
 	[MessageHandler((ushort)ClientToServerId.playerTransform)]
 	private static void PlayerTransform(ushort fromClientId, Message message)
 	{
-		Debug.Log(message.GetUShort());
+		ushort playerID = message.GetUShort();
 		if (list.TryGetValue(fromClientId, out Player player))
 			//								camera forward				position			rotation				velocity
 			player.Movement.SetTransform(message.GetVector3(), message.GetVector3(), message.GetQuaternion(), message.GetVector3());

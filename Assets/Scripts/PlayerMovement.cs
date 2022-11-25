@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
 
 	[SerializeField] private Player player;
-	[SerializeField] private Vector3 camForward;
+	[SerializeField] public Vector3 camForward { get; private set; }
 	[SerializeField] private GameObject camProxy;
 	private Vector3 myVelocity;
 
@@ -54,5 +54,25 @@ public class PlayerMovement : MonoBehaviour
 
 		//send information about this player to every client
 		NetworkManager.Singleton.Server.SendToAll(message);
+	}
+
+
+	// this function will be called when a player boops, and then send that boop data to every other player 
+	// for them to deal with the boop locally
+	[MessageHandler((ushort)ClientToServerId.playerBooped)]
+	private static void ClientBooped(ushort fromClientId, Message message)
+	{
+		foreach(Collider collider in Player.list[fromClientId].playersInBoopRange)
+		{
+			if (Player.list.TryGetValue(fromClientId, out Player player))
+			{
+				Message messageToClient = Message.Create(MessageSendMode.Unreliable, ServerToClientId.playerBooped);
+				Debug.LogWarning(player.Username);
+				// use the camForward vector of the booper to determine the direction of the boop
+				messageToClient.AddVector3(player.camForward);
+
+				NetworkManager.Singleton.Server.Send(messageToClient, collider.transform.parent.GetComponent<Player>().Id);
+			}
+		}
 	}
 }

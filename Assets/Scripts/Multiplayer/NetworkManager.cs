@@ -9,12 +9,14 @@ public enum ServerToClientId : ushort
 	playerSpawned = 1,
 	playerTransform,
 	sync,
+	playerBooped,
 }
 
 public enum ClientToServerId : ushort
 {
 	name = 1,
 	playerTransform,
+	playerBooped,
 }
 
 public class NetworkManager : MonoBehaviour
