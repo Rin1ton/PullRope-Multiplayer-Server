@@ -1,4 +1,5 @@
 using Riptide;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -14,6 +15,23 @@ public class Player : MonoBehaviour
 	public string Username { get; private set; }
 	public string mySkin { get; private set; }
 	public PlayerMovement Movement => movement;
+
+	private int _score = 0;
+
+	public int Score {
+		get => _score;
+
+		set
+		{
+			_score = value;
+			Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.updatePlayerScore);
+
+			message.AddUShort(Id);
+			message.AddInt(_score);
+
+			NetworkManager.Singleton.Server.SendToAll(message);
+		}
+	}
 
 	[SerializeField] private PlayerMovement movement;
 
@@ -39,6 +57,7 @@ public class Player : MonoBehaviour
 		player.SendSpawned();
 		list.Add(id, player);
 	}
+
 
 	#region Messages
 	private void SendSpawned()
@@ -76,6 +95,22 @@ public class Player : MonoBehaviour
 			player.Movement.SetTransform(message.GetVector3(), message.GetVector3(), message.GetQuaternion(), message.GetVector3());
 
 			//Debug.Log(message.GetVector3() + ", " + message.GetVector3() + ", " + message.GetQuaternion());
+	}
+
+	[MessageHandler((ushort)ClientToServerId.playerRespawned)]
+	private static void PlayerDied(ushort fromClientId, Message message)
+	{
+		Player player;
+		int killer = message.GetInt();
+		if (killer >= 0)
+		{
+			list.TryGetValue(Convert.ToUInt16(killer), out player);
+			player.Score++;
+		} else
+		{
+			list.TryGetValue(fromClientId, out player);
+			player.Score--;
+		}
 	}
 	#endregion
 }

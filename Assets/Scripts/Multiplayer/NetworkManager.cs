@@ -10,6 +10,7 @@ public enum ServerToClientId : ushort
 	playerTransform,
 	sync,
 	playerBooped,
+	updatePlayerScore,
 }
 
 public enum ClientToServerId : ushort
@@ -17,6 +18,7 @@ public enum ClientToServerId : ushort
 	name = 1,
 	playerTransform,
 	playerBooped,
+	playerRespawned,
 }
 
 public class NetworkManager : MonoBehaviour

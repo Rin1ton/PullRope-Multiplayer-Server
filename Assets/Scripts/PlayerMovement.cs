@@ -68,7 +68,8 @@ public class PlayerMovement : MonoBehaviour
 			{
 				Message messageToClient = Message.Create(MessageSendMode.Unreliable, ServerToClientId.playerBooped);
 				Debug.LogWarning(player.Username);
-				// use the camForward vector of the booper to determine the direction of the boop
+
+				messageToClient.AddUShort(fromClientId);
 				messageToClient.AddVector3(player.camForward);
 
 				NetworkManager.Singleton.Server.Send(messageToClient, collider.transform.parent.GetComponent<Player>().Id);
