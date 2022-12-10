@@ -48,7 +48,7 @@ public class GameLogic : MonoBehaviour
 
 	private void SendGameState()
 	{
-		Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.gameState);
+		Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.gameState);
 		message.AddFloat(gameState);
 		NetworkManager.Singleton.Server.SendToAll(message);
 	}
@@ -59,6 +59,14 @@ public class GameLogic : MonoBehaviour
 		{
 			gameState -= Time.fixedDeltaTime;
 			SendGameState();
+		} else if (gameCommenced && gameState <= 0)
+		{
+			gameCommenced = false;
+			foreach (Player player in Player.list.Values)
+			{
+				player.isReady = false;
+				player.Score = 0;
+			}
 		}
 	}
 
