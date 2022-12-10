@@ -27,12 +27,8 @@ public class Player : MonoBehaviour
 		{
 			_score = value;
 			Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.updatePlayerScore);
-
 			message.AddUShort(Id);
 			message.AddInt(_score);
-
-			
-
 			NetworkManager.Singleton.Server.SendToAll(message);
 		}
 	}

@@ -32,6 +32,8 @@ public class GameLogic : MonoBehaviour
 	{
 		Singleton.gameCommenced = true;
 		Singleton.gameState = roundLength;
+		foreach (Player player in Player.list.Values)
+			player.Score = 0;
 
 		Singleton.SendGameState();
 	}
@@ -65,7 +67,6 @@ public class GameLogic : MonoBehaviour
 			foreach (Player player in Player.list.Values)
 			{
 				player.isReady = false;
-				player.Score = 0;
 			}
 		}
 	}
