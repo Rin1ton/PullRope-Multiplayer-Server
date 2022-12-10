@@ -67,12 +67,12 @@ public class PlayerMovement : MonoBehaviour
 			if (Player.list.TryGetValue(fromClientId, out Player player))
 			{
 				Message messageToClient = Message.Create(MessageSendMode.Unreliable, ServerToClientId.playerBooped);
-				Debug.LogWarning(player.Username);
 
 				messageToClient.AddUShort(fromClientId);
 				messageToClient.AddVector3(player.camForward);
 
-				NetworkManager.Singleton.Server.Send(messageToClient, collider.transform.parent.GetComponent<Player>().Id);
+				if (collider != null)
+					NetworkManager.Singleton.Server.Send(messageToClient, collider.transform.parent.GetComponent<Player>().Id);
 			}
 		}
 	}

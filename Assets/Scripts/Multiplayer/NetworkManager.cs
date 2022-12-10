@@ -11,6 +11,7 @@ public enum ServerToClientId : ushort
 	sync,
 	playerBooped,
 	updatePlayerScore,
+	gameState,
 }
 
 public enum ClientToServerId : ushort
@@ -19,6 +20,7 @@ public enum ClientToServerId : ushort
 	playerTransform,
 	playerBooped,
 	playerRespawned,
+	playerReady,
 }
 
 public class NetworkManager : MonoBehaviour

@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
 
 	private int _score = 0;
 
+	public bool isReady;
+
 	public int Score {
 		get => _score;
 
@@ -28,6 +30,8 @@ public class Player : MonoBehaviour
 
 			message.AddUShort(Id);
 			message.AddInt(_score);
+
+			
 
 			NetworkManager.Singleton.Server.SendToAll(message);
 		}
