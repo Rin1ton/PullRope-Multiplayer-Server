@@ -69,8 +69,6 @@ public class NetworkManager : MonoBehaviour
 
 		if (CurrentTick % 200 == 0)
 			SendSync();
-
-		CurrentTick++;
 	}
 
 	private void OnApplicationQuit()
@@ -89,6 +87,7 @@ public class NetworkManager : MonoBehaviour
 	 */
 	private void SendSync()
 	{
+		return;
 		Message message = Message.Create(MessageSendMode.Unreliable, (ushort)ServerToClientId.sync);
 
 		message.Add(CurrentTick);

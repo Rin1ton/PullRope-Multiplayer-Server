@@ -34,7 +34,9 @@ public class PlayerMovement : MonoBehaviour
 	 */
 	private void SendTransform()
 	{
-		/* Client is expecting move data every second tick, so we
+		/* Client is expecting move data every second tick
+		 * 
+		 * , so we
 		 * won't send this message every tick.
 		 */
 		if (NetworkManager.Singleton.CurrentTick % 2 != 0)
